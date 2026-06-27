@@ -74,11 +74,11 @@ main .container { position: relative; display: flex; align-items: center; justif
   80%, 100% { color: var(--white); }
 }
 
-.word-row { display: flex; align-items: center; justify-content: center; height: 96px; position: relative; overflow: visible; }
+.word-row { display: flex; align-items: center; justify-content: center; height: 164px; position: relative; overflow: visible; }
 .cycle-word {
   position: absolute; font-size: 72px; font-weight: 800; letter-spacing: -.03em;
-  line-height: 1; opacity: 0; transform: translateY(10px);
-  transition: opacity .35s ease, transform .35s ease; white-space: nowrap; user-select: none;
+  line-height: 1.05; opacity: 0; transform: translateY(10px); text-align: center;
+  transition: opacity .35s ease, transform .35s ease; white-space: pre; user-select: none;
 }
 .cycle-word.active  { opacity: 1; transform: translateY(0); }
 .cycle-word.leaving { opacity: 0; transform: translateY(-10px); }
@@ -540,10 +540,10 @@ var AIRTABLE_INVESTOR_TABLE = 'tblwag7EXl71upjdO';
 
   /* ── Cycling phrase ── */
   var WORDS = [
-    { text: 'We LEARN',    color: '#A7ADB3' },
-    { text: 'You VALIDATE', color: '#FF6A3D' },
-    { text: 'We BUILD',    color: '#FF6A3D' },
-    { text: 'You IMPROVE', color: '#FFC20E' },
+    { text: 'We\nlearn',    color: '#A7ADB3' },
+    { text: 'You\nvalidate', color: '#FF6A3D' },
+    { text: 'We\nbuild',    color: '#FF6A3D' },
+    { text: 'You\nimprove', color: '#FFC20E' },
   ];
   var cw      = document.getElementById('cw');
   var cursor  = document.getElementById('cursor');
@@ -551,15 +551,17 @@ var AIRTABLE_INVESTOR_TABLE = 'tblwag7EXl71upjdO';
   var idx     = 0;
 
   function positionCursor() {
-    var r = cw.getBoundingClientRect();
+    var tail = document.getElementById('cwTail');
+    if (!tail) return;
+    var r = tail.getBoundingClientRect();
     var p = cw.parentElement.getBoundingClientRect();
-    cursor.style.left      = (r.right - p.left + 6) + 'px';
-    cursor.style.top       = '50%';
-    cursor.style.transform = 'translateY(-50%)';
+    cursor.style.left      = (r.left - p.left + 4) + 'px';
+    cursor.style.top       = (r.top - p.top) + 'px';
+    cursor.style.transform = 'none';
   }
 
   function showWord(i) {
-    cw.textContent          = WORDS[i].text;
+    cw.innerHTML            = WORDS[i].text + '<span id="cwTail" style="display:inline-block;width:0;height:1em;vertical-align:top;"></span>';
     cw.style.color          = WORDS[i].color;
     cursor.style.background = WORDS[i].color;
     cw.classList.remove('leaving');
@@ -574,7 +576,8 @@ var AIRTABLE_INVESTOR_TABLE = 'tblwag7EXl71upjdO';
   }
 
   if (reduced) {
-    cw.textContent = WORDS[0].text; cw.style.color = WORDS[0].color;
+    cw.innerHTML = WORDS[0].text + '<span id="cwTail" style="display:inline-block;width:0;height:1em;vertical-align:top;"></span>';
+    cw.style.color = WORDS[0].color;
     cw.classList.add('active');
     cursor.style.display = 'none';
   } else {
