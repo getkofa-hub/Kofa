@@ -701,7 +701,7 @@ var AIRTABLE_INVESTOR_TABLE = 'tblwag7EXl71upjdO';
     var successEl = document.getElementById(isWl ? 'wlSuccess' : 'invSuccess');
 
     /* timing trap */
-    if (Date.now() - tsVal < 3000) { showErr(errEl, 'Please wait a moment and try again.'); return; }
+    if (Date.now() - tsVal < 1500) { showErr(errEl, 'Please wait a moment and try again.'); return; }
 
     /* required field check */
     var required = isWl
