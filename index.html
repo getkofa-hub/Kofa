@@ -76,9 +76,9 @@ main .container { position: relative; display: flex; align-items: center; justif
 
 .word-row { display: flex; align-items: center; justify-content: center; height: 96px; position: relative; overflow: visible; }
 .cycle-word {
-  position: absolute; font-size: 80px; font-weight: 800; letter-spacing: -.03em;
-  line-height: 1; opacity: 0; transform: translateY(8px);
-  transition: opacity .3s ease, transform .3s ease; white-space: nowrap; user-select: none;
+  position: absolute; font-size: 72px; font-weight: 800; letter-spacing: -.03em;
+  line-height: 1; opacity: 0; transform: translateY(10px);
+  transition: opacity .35s ease, transform .35s ease; white-space: nowrap; user-select: none;
 }
 .cycle-word.active  { opacity: 1; transform: translateY(0); }
 .cycle-word.leaving { opacity: 0; transform: translateY(-10px); }
@@ -312,7 +312,6 @@ header img { animation: fadeIn 0.5s ease 0.4s both; }
     </div>
     <div class="tilt-card" id="tiltCard">
       <div class="hero-block">
-        <span class="hero-static">We</span>
         <div class="word-row" aria-live="polite" aria-atomic="true">
           <span class="cycle-word" id="cw"></span>
           <span class="cursor"     id="cursor" aria-hidden="true"></span>
@@ -539,12 +538,12 @@ var AIRTABLE_INVESTOR_TABLE = 'tblwag7EXl71upjdO';
 
 (function () {
 
-  /* ── Cycling word ── */
+  /* ── Cycling phrase ── */
   var WORDS = [
-    { text: 'learn',    color: '#A7ADB3' },
-    { text: 'validate', color: '#FF6A3D' },
-    { text: 'build',    color: '#FF6A3D' },
-    { text: 'improve',  color: '#FFC20E' },
+    { text: 'We LEARN',    color: '#A7ADB3' },
+    { text: 'You VALIDATE', color: '#FF6A3D' },
+    { text: 'We BUILD',    color: '#FF6A3D' },
+    { text: 'You IMPROVE', color: '#FFC20E' },
   ];
   var cw      = document.getElementById('cw');
   var cursor  = document.getElementById('cursor');
@@ -571,11 +570,16 @@ var AIRTABLE_INVESTOR_TABLE = 'tblwag7EXl71upjdO';
   function advance() {
     cw.classList.remove('active');
     cw.classList.add('leaving');
-    setTimeout(function () { idx = (idx + 1) % WORDS.length; showWord(idx); }, 320);
+    setTimeout(function () { idx = (idx + 1) % WORDS.length; showWord(idx); }, 350);
   }
 
-  if (reduced) { showWord(0); cursor.style.animation = 'none'; }
-  else         { showWord(0); setInterval(advance, 2500); window.addEventListener('resize', positionCursor); }
+  if (reduced) {
+    cw.textContent = WORDS[0].text; cw.style.color = WORDS[0].color;
+    cw.classList.add('active');
+    cursor.style.display = 'none';
+  } else {
+    showWord(0); setInterval(advance, 2500); window.addEventListener('resize', positionCursor);
+  }
 
   /* ── Parallax tilt + arc mouse reaction ── */
   var heroBlock = document.querySelector('.hero-block');
@@ -621,17 +625,17 @@ var AIRTABLE_INVESTOR_TABLE = 'tblwag7EXl71upjdO';
       var dx = ((e.clientX - r.left) / r.width  - 0.5) * 2;  /* -1…1 */
       var dy = ((e.clientY - r.top)  / r.height - 0.5) * 2;
 
-      /* cycling word / hero block: ±6deg */
-      heroBlock.style.transition = 'transform 0.3s ease-out';
+      /* cycling word / hero block: ±12deg + subtle scale */
+      heroBlock.style.transition = 'transform 0.1s ease-out';
       heroBlock.style.transform  =
-        'perspective(800px) rotateY(' + (dx*6) + 'deg) rotateX(' + (-dy*6) + 'deg)';
+        'perspective(800px) rotateY(' + (dx*12) + 'deg) rotateX(' + (-dy*12) + 'deg) scale(' + (1 + Math.abs(dx)*0.03 + Math.abs(dy)*0.03) + ')';
 
-      /* tagline + CTA: ±3deg — shallower = parallax depth */
-      var t3 = 'perspective(800px) rotateY(' + (dx*3) + 'deg) rotateX(' + (-dy*3) + 'deg)';
-      taglineEl.style.transition = 'transform 0.3s ease-out';
-      taglineEl.style.transform  = t3;
-      ctaEl.style.transition     = 'transform 0.3s ease-out';
-      ctaEl.style.transform      = t3;
+      /* tagline + CTA: ±6deg — shallower = parallax depth */
+      var t6 = 'perspective(800px) rotateY(' + (dx*6) + 'deg) rotateX(' + (-dy*6) + 'deg)';
+      taglineEl.style.transition = 'transform 0.1s ease-out';
+      taglineEl.style.transform  = t6;
+      ctaEl.style.transition     = 'transform 0.1s ease-out';
+      ctaEl.style.transform      = t6;
 
       /* arcs: rotate ±5deg around their corner anchor */
       var tilt = 'rotate(' + (dx*5) + 'deg)';
